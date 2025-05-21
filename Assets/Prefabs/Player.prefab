@@ -108,7 +108,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.425, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4866844963606486619}
   m_Father: {fileID: 7422484318069565593}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &229832317351034063
@@ -169,6 +170,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &3777785118711327854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4866844963606486619}
+  m_Layer: 0
+  m_Name: ProjectileSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4866844963606486619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3777785118711327854}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2654471908476305410}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5598637691400357783
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,6 +305,7 @@ GameObject:
   - component: {fileID: 277887797049982303}
   - component: {fileID: 4985201568730582356}
   - component: {fileID: -2844961534071888913}
+  - component: {fileID: 6924283879214315829}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -428,6 +461,24 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 57e1630be35f7034688fd38953765a55, type: 2}
   turrentTransform: {fileID: 7422484318069565593}
+--- !u!114 &6924283879214315829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7765724978494007240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a05c004389e9d40bb1d472595a6edf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileLauncher
+  ShowTopMostFoldoutHeaderGroup: 1
+  inputReader: {fileID: 11400000, guid: 57e1630be35f7034688fd38953765a55, type: 2}
+  clientProjectilePrefab: {fileID: 3924231627668749257, guid: 4c65b4a72037c30409718690c169ea43, type: 3}
+  serverProjectilePrefab: {fileID: 7161530111776519506, guid: 375a3394b6906894c85c19963cd5d19b, type: 3}
+  projectileSpawnPoint: {fileID: 4866844963606486619}
+  projectileSpeed: 10
 --- !u!1 &8137027627931034147
 GameObject:
   m_ObjectHideFlags: 0
