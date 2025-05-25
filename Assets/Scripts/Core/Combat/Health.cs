@@ -4,8 +4,10 @@ using System;
 
 public class Health : NetworkBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
+    [field: SerializeField] public int MaxHealth { get; private set; } = 100;
+    // use field: SerializeField to expose the field in the inspector while keeping the restriction of private set.
+    // This allows you to set the MaxHealth in the inspector, but prevents it from being changed at runtime.
+    public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
     /*
     Network Variable can only be changed on the server. If client tries to change it, nothing will happen.
     If you want to change it on the client, you need to send a request to the server to change it. (through server RPC)
@@ -20,7 +22,7 @@ public class Health : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        CurrentHealth.Value = maxHealth;
+        CurrentHealth.Value = MaxHealth;
     }
 
     public void TakeDamage(int damage)
@@ -37,22 +39,22 @@ public class Health : NetworkBehaviour
     {
         if (isDead) return;
 
-        CurrentHealth.Value += amount;
         /*
         ONE WAY TO DO IT:
+        CurrentHealth.Value += amount;
         if (CurrentHealth.Value <= 0)
         {
             CurrentHealth.Value = 0;
             isDead = true;
             OnDie?.Invoke(this);
         }
-        else if (CurrentHealth.Value > maxHealth)
+        else if (CurrentHealth.Value > MaxHealth)
         {
-            CurrentHealth.Value = maxHealth;
+            CurrentHealth.Value = MaxHealth;
         }
         ANOTHER WAY TO DO IT:
         */
-        CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value, 0, maxHealth);
+        CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value, 0, MaxHealth);
         if (CurrentHealth.Value <= 0)
         {
             isDead = true;
