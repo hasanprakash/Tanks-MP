@@ -37,6 +37,8 @@ public class Health : NetworkBehaviour
 
     public void ModifyHealth(int amount)
     {
+        if (!IsServer) return; // Only the server can modify health
+
         if (isDead) return;
 
         /*

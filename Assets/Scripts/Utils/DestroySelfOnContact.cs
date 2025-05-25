@@ -6,6 +6,7 @@ public class DestroySelfOnContact : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Destroy this game object
+        Debug.Log($"Destroying {gameObject.name} on contact with {other.name}");
         Destroy(gameObject);
     }
 }
