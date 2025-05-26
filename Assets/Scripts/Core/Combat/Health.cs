@@ -56,7 +56,7 @@ public class Health : NetworkBehaviour
         }
         ANOTHER WAY TO DO IT:
         */
-        CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value, 0, MaxHealth);
+        CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value + amount, 0, MaxHealth);
         if (CurrentHealth.Value <= 0)
         {
             isDead = true;

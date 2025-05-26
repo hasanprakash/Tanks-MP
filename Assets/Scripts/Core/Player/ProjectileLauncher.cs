@@ -71,10 +71,18 @@ public class ProjectileLauncher : NetworkBehaviour
     {
         GameObject projectileInstance = Instantiate(serverProjectilePrefab, spawnPos, Quaternion.identity);
         projectileInstance.transform.up = spawnDir;
+
         Physics2D.IgnoreCollision(projectileInstance.GetComponent<Collider2D>(), playerCollider);
 
-        muzzleFlash.SetActive(true);
-        muzzleFlashTimer = muzzleFlashDuration;
+        if (projectileInstance.TryGetComponent<DealDamageOnContact>(out DealDamageOnContact dealDamage))
+        {
+            dealDamage.SetOwner(OwnerClientId);
+        }
+
+        if (projectileInstance.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
+        {
+            rb.linearVelocity = spawnDir * projectileSpeed;
+        }
 
         // Other players should see the projectile, so spawing it on all clients (calling from the server)
         SpawnDummyProjectileClientRpc(spawnPos, spawnDir);
@@ -99,11 +107,6 @@ public class ProjectileLauncher : NetworkBehaviour
 
         Physics2D.IgnoreCollision(projectileInstance.GetComponent<Collider2D>(), playerCollider);
 
-        if (projectileInstance.TryGetComponent<DealDamageOnContact>(out DealDamageOnContact dealDamage))
-        {
-            dealDamage.SetOwner(OwnerClientId);
-        }
-
         if (projectileInstance.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
         {
             rb.linearVelocity = spawnDir * projectileSpeed;
@@ -115,7 +118,6 @@ public class ProjectileLauncher : NetworkBehaviour
             velocity is a vector quantity, which has both magnitude and direction (speed of object and it's direction)
             direction * speed => velocity
             */
-            Debug.Log("Velocity: " + rb.linearVelocity);
         }
         else
         {

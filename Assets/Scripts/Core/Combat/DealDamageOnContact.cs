@@ -1,5 +1,5 @@
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 
 public class DealDamageOnContact : MonoBehaviour
 {
@@ -16,15 +16,14 @@ public class DealDamageOnContact : MonoBehaviour
     {
         if (col.attachedRigidbody == null) { return; }
 
-        if (col.attachedRigidbody.TryGetComponent<NetworkObject>(out NetworkObject netObj))
+        if (col.attachedRigidbody.TryGetComponent(out NetworkObject netObj))
         {
             if (ownerClientId == netObj.OwnerClientId)
             {
                 return;
             }
         }
-
-        if (col.attachedRigidbody.TryGetComponent<Health>(out Health health))
+        if (col.attachedRigidbody.TryGetComponent(out Health health))
         {
             health.TakeDamage(damage);
         }
