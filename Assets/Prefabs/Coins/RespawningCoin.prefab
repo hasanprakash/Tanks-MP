@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &553224653171176109
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1952257504127680506, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1245663420
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952257504127680506, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952257504127680506, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 261657942
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.35778
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.27242
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996176693243715210, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2796704048295728237, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f27f19f34997b945a4a681c94022af6, type: 3}
+    - target: {fileID: 7647882297904745977, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      propertyPath: m_Name
+      value: RespawningCoin
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7647882297904745977, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -243987450622614444}
+  m_SourcePrefab: {fileID: 100100000, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+--- !u!212 &2405645025654466240 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2796704048295728237, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+  m_PrefabInstance: {fileID: 553224653171176109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7894755764305002324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7647882297904745977, guid: a119a46fc3dbc9248b0dd73e5dbb427b, type: 3}
+  m_PrefabInstance: {fileID: 553224653171176109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-243987450622614444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7894755764305002324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29837efa41a010141906d480beb06dc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RespawningCoin
+  ShowTopMostFoldoutHeaderGroup: 1
+  spriteRenderer: {fileID: 2405645025654466240}
