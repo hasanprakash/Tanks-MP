@@ -5,6 +5,7 @@ public class ProjectileLauncher : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private CoinWallet wallet; // Reference to the CoinWallet to check if the player has enough coins to fire
     [SerializeField] private GameObject clientProjectilePrefab;
     [SerializeField] private GameObject serverProjectilePrefab;
     [SerializeField] private Transform projectileSpawnPoint;
@@ -15,10 +16,11 @@ public class ProjectileLauncher : NetworkBehaviour
     [SerializeField] private float projectileSpeed = 10f;
     [SerializeField] private float fireRate = 0.5f; // how many seconds it takes to fire a projectile
     [SerializeField] private float muzzleFlashDuration = 0.1f;
+    [SerializeField] private int costToFire;
 
     private bool shouldFire = false;
-    private float lastFireTime = 0f;
     private float muzzleFlashTimer = 0f;
+    private float timer = 0f;
 
     public override void OnNetworkSpawn()
     {
@@ -49,10 +51,21 @@ public class ProjectileLauncher : NetworkBehaviour
 
         if (!IsOwner) return;
 
+        if (timer < fireRate)
+        {
+            timer += Time.deltaTime;
+            return;
+        }
+
         if (!shouldFire) return;
 
-        if (Time.time < lastFireTime + fireRate) return;
-        lastFireTime = Time.time;
+        if (wallet.TotalCoins.Value < costToFire)
+        {
+            Debug.LogWarning("Not enough coins to fire the projectile.");
+            return;
+        }
+
+        timer = 0f;
 
         // Fire the dummy projectile (doesn't deal the damage) at the owner end, to reduce the latency
         SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
@@ -69,6 +82,13 @@ public class ProjectileLauncher : NetworkBehaviour
     [ServerRpc]
     private void FireProjectileServerRpc(Vector2 spawnPos, Vector2 spawnDir)
     {
+        if (wallet.TotalCoins.Value < costToFire)
+        {
+            Debug.LogWarning("Not enough coins to fire the projectile.");
+            return;
+        }
+        wallet.SpendCoins(costToFire);
+
         GameObject projectileInstance = Instantiate(serverProjectilePrefab, spawnPos, Quaternion.identity);
         projectileInstance.transform.up = spawnDir;
 
