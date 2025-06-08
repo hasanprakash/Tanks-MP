@@ -1,0 +1,61 @@
+using System.Threading.Tasks;
+using UnityEngine;
+
+public class ClientSingleton : MonoBehaviour
+{
+    private static ClientSingleton _instance;
+    private ClientGameManager _gameManager;
+
+    public static ClientSingleton Instance
+    {
+        get
+        {
+            if (_instance != null)
+            {
+                return _instance;
+            }
+            _instance = FindFirstObjectByType<ClientSingleton>(); // FindFirstObjectByType is a Unity method that finds the first object of the specified type in the scene.
+            // we can't use "this" here because this is not a static property.
+
+            if (_instance == null)
+            {
+                // TO MANUALLY CREATE THE SINGLETON GAMEOBJECT
+                /*
+                GameObject singletonObject = new GameObject("ClientSingleton");
+                _instance = singletonObject.AddComponent<ClientSingleton>();
+                DontDestroyOnLoad(singletonObject);
+                */
+                Debug.LogError("ClientSingleton instance not found in the scene. Please ensure it is present.");
+                return null;
+            }
+            return _instance;
+        }
+    }
+
+    // ANOTTHER WAY TO CREATE A SINGLETON INSTANCE
+    /*
+    private void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (_instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    */
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public async Task CreateClient()
+    {
+        _gameManager = new ClientGameManager();
+        await _gameManager.InitAsync();
+        // After initialization, you can proceed with other client logic, such as connecting to a server or starting the game.
+    }
+}
