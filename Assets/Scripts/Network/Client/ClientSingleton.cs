@@ -4,7 +4,7 @@ using UnityEngine;
 public class ClientSingleton : MonoBehaviour
 {
     private static ClientSingleton _instance;
-    private ClientGameManager _gameManager;
+    public ClientGameManager GameManager { get; private set; }
 
     public static ClientSingleton Instance
     {
@@ -52,10 +52,10 @@ public class ClientSingleton : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public async Task CreateClient()
+    public async Task<bool> CreateClient()
     {
-        _gameManager = new ClientGameManager();
-        await _gameManager.InitAsync();
+        GameManager = new ClientGameManager();
+        return await GameManager.InitAsync();
         // After initialization, you can proceed with other client logic, such as connecting to a server or starting the game.
     }
 }
