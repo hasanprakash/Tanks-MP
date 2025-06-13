@@ -23,15 +23,15 @@ public class ApplicationController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Launching client application...");
+            Debug.Log("Launching host / client application...");
             // Initialize client application logic here
-
-            // ClientSingleton clientSingleton = Instantiate(ClientSingleton.Instance); // can't we create like this? have to check that out later.
-            ClientSingleton clientSingleton = Instantiate(clientPrefab); // what if we don't initialize?
-            bool authenticated = await clientSingleton.CreateClient();
 
             HostSingleton hostSingleton = Instantiate(hostPrefab); // what if we don't initialize?
             hostSingleton.CreateHost();
+            
+            // ClientSingleton clientSingleton = Instantiate(ClientSingleton.Instance); // can't we create like this? have to check that out later.
+            ClientSingleton clientSingleton = Instantiate(clientPrefab); // what if we don't initialize?
+            bool authenticated = await clientSingleton.CreateClient();
 
             if (authenticated)
             {

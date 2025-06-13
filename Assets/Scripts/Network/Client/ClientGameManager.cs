@@ -1,10 +1,17 @@
+using System;
 using System.Threading.Tasks;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
 using Unity.Services.Core;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ClientGameManager
 {
+    private JoinAllocation _allocation;
     public const string MAIN_MENU_SCENE = "Menu"; 
 
     // LOGIC TO INTERACT WITH UNITY RELAY
@@ -36,5 +43,31 @@ public class ClientGameManager
     public void GoToMainMenu()
     {
         SceneManager.LoadScene(MAIN_MENU_SCENE);
+    }
+
+    public async Task StartClientAsync(string joinCode)
+    {
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+        try
+        {
+            _allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+        }
+        catch (RelayServiceException e)
+        {
+            Debug.LogError($"Failed to create host: {e.Message}");
+            return;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"An error occurred while starting the host: {e.Message}");
+            return;
+        }
+
+        RelayServerData relayServerData = AllocationUtils.ToRelayServerData(_allocation, "dtls");
+        transport.SetRelayServerData(relayServerData); // setting this, so that network manager uses the relay server ip and port to connect to the server.
+
+        NetworkManager.Singleton.StartClient();
+        Debug.Log($"Client started with join code: {joinCode}");
     }
 }
