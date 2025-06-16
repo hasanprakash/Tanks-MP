@@ -2,15 +2,20 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Collections;
 
 public class HostGameManager
 {
     private Allocation _allocation;
     private string _joinCode;
+    private string _lobbyId;
 
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
@@ -51,8 +56,59 @@ public class HostGameManager
         RelayServerData relayServerData = AllocationUtils.ToRelayServerData(_allocation, "dtls");
         transport.SetRelayServerData(relayServerData);
 
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync("MyLobby", MaxConnections, new CreateLobbyOptions
+            {
+                IsPrivate = false,
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "JoinCode", new DataObject(DataObject.VisibilityOptions.Member, _joinCode) }
+                    // DataObject.VisibilityOptions.Member, Private, Public
+                    // Member: Visible to all members of the lobby
+                    // Private: Visible only to the creator of the lobby
+                    // Public: Visible to everyone, including non-members
+                }
+            });
+
+            _lobbyId = lobby.Id;
+            Debug.Log($"Lobby created successfully with ID: {_lobbyId}");
+
+            HostSingleton.Instance.StartCoroutine(HeartBeatLobby(15f));
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError($"Failed to create lobby: {e.Message}");
+            return;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"An error occurred while creating the lobby: {e.Message}");
+            return;
+        }
+
         NetworkManager.Singleton.StartHost();
 
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
+    }
+
+    private IEnumerator HeartBeatLobby(float waitTimeSeconds) {
+        WaitForSeconds delay = new WaitForSeconds(waitTimeSeconds);
+        while (true)
+        {
+            try
+            {
+                LobbyService.Instance.SendHeartbeatPingAsync(_lobbyId);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogError($"Failed to send lobby heartbeat: {e.Message}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"An error occurred while sending the lobby heartbeat: {e.Message}");
+            }
+            yield return delay;
+        }
     }
 }
