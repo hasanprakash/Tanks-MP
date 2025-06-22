@@ -67,6 +67,14 @@ public class ClientGameManager
         RelayServerData relayServerData = AllocationUtils.ToRelayServerData(_allocation, "dtls");
         transport.SetRelayServerData(relayServerData); // setting this, so that network manager uses the relay server ip and port to connect to the server.
 
+        UserData userData = new UserData
+        {
+            userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer")
+        };
+        string payload = JsonUtility.ToJson(userData);
+        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
+
         NetworkManager.Singleton.StartClient();
         Debug.Log($"Client started with join code: {joinCode}");
     }

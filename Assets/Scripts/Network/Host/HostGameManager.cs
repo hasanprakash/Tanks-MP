@@ -17,6 +17,8 @@ public class HostGameManager
     private string _joinCode;
     private string _lobbyId;
 
+    private NetworkServer _networkServer;
+
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
     public async Task StartHostAsync()
@@ -58,7 +60,8 @@ public class HostGameManager
 
         try
         {
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync("MyLobby", MaxConnections, new CreateLobbyOptions
+            string playerName = PlayerPrefs.GetString(NameSelector.PlayerName, "UnknownPlayer");
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync($"{playerName}'s Lobby", MaxConnections, new CreateLobbyOptions
             {
                 IsPrivate = false,
                 Data = new Dictionary<string, DataObject>
@@ -86,6 +89,16 @@ public class HostGameManager
             Debug.LogError($"An error occurred while creating the lobby: {e.Message}");
             return;
         }
+
+        UserData userData = new UserData
+        {
+            userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer")
+        };
+        string payload = JsonUtility.ToJson(userData);
+        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
+
+        _networkServer = new NetworkServer(NetworkManager.Singleton);
 
         NetworkManager.Singleton.StartHost();
 

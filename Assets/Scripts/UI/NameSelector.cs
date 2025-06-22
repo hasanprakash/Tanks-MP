@@ -10,6 +10,8 @@ public class NameSelector : MonoBehaviour
     [SerializeField] private int minNameLength = 3;
     [SerializeField] private int maxNameLength = 12;
 
+    public static string PlayerName = "PlayerName";
+
     private void Start()
     {
         if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
@@ -18,7 +20,7 @@ public class NameSelector : MonoBehaviour
             return;
         }
 
-        nameField.text = PlayerPrefs.GetString("PlayerName", string.Empty);
+        nameField.text = PlayerPrefs.GetString(PlayerName, string.Empty);
         // what's this PlayerPrefs?
         // PlayerPrefs is a Unity class used to store and access player preferences and settings.
         // It allows you to save simple data types like strings, integers, and floats.
@@ -35,7 +37,7 @@ public class NameSelector : MonoBehaviour
 
     public void Connect()
     {
-        PlayerPrefs.SetString("PlayerName", nameField.text);
+        PlayerPrefs.SetString(PlayerName, nameField.text);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
