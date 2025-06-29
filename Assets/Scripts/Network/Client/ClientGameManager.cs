@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
+using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
@@ -12,12 +13,15 @@ using UnityEngine.SceneManagement;
 public class ClientGameManager
 {
     private JoinAllocation _allocation;
+    private NetworkClient _networkClient;
     public const string MAIN_MENU_SCENE = "Menu"; 
 
     // LOGIC TO INTERACT WITH UNITY RELAY
     public async Task<bool> InitAsync()
     {
         await UnityServices.InitializeAsync();
+
+        _networkClient = new NetworkClient(NetworkManager.Singleton);
 
         AuthState isAuthenticated = await AuthenticationWrapper.DoAuth(5); // 5 is the number of tries to authenticate the player.
         if (isAuthenticated == AuthState.Authenticated)
@@ -69,7 +73,8 @@ public class ClientGameManager
 
         UserData userData = new UserData
         {
-            userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer")
+            userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer"),
+            userAuthId = AuthenticationService.Instance.PlayerId
         };
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
