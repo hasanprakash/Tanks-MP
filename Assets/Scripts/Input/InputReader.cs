@@ -8,6 +8,8 @@ public class InputReader : ScriptableObject, IPlayerActions
 {
     public event Action<bool> OnAttackEvent;
     public event Action<Vector2> OnMoveEvent;
+    // not using events here because, position will be updated more frequenctly, we don't want to spam events
+    public Vector2 AimPosition { get; private set; }
     private Controls controls;
     public void OnEnable()
     {
@@ -41,38 +43,8 @@ public class InputReader : ScriptableObject, IPlayerActions
         }
     }
 
- 
-    public void OnCrouch(InputAction.CallbackContext context)
+    public void OnAim(InputAction.CallbackContext context)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnLook(InputAction.CallbackContext context)
-    {
-        // throw new System.NotImplementedException();
-    }
-    public void OnNext(InputAction.CallbackContext context)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnPrevious(InputAction.CallbackContext context)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnSprint(InputAction.CallbackContext context)
-    {
-        throw new System.NotImplementedException();
+        AimPosition = context.ReadValue<Vector2>();
     }
 }
