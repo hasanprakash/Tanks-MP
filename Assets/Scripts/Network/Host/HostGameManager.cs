@@ -11,8 +11,9 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 using Unity.Services.Authentication;
+using System;
 
-public class HostGameManager
+public class HostGameManager : IDisposable
 {
     private Allocation _allocation;
     private string _joinCode;
@@ -125,5 +126,30 @@ public class HostGameManager
             }
             yield return delay;
         }
+    }
+
+    public void Dispose()
+    {
+        HostSingleton.Instance.StopCoroutine(nameof(HeartBeatLobby));
+
+        if (!string.IsNullOrEmpty(_lobbyId))
+        {
+            try
+            {
+                LobbyService.Instance.DeleteLobbyAsync(_lobbyId);
+                Debug.Log($"Lobby with ID {_lobbyId} deleted successfully.");
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogError($"Failed to delete lobby: {e.Message}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"An error occurred while deleting the lobby: {e.Message}");
+            }
+            _lobbyId = string.Empty; // Clear the lobby ID after deletion
+        }
+
+        _networkServer?.Dispose();
     }
 }

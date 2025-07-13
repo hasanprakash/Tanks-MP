@@ -56,4 +56,11 @@ public class HostSingleton : MonoBehaviour
     {
         GameManager = new HostGameManager();
     }
+
+    private void OnDestroy()
+    {
+        GameManager?.Dispose();
+        _instance = null; // Clear the instance when the singleton is destroyed
+        Debug.Log("HostSingleton destroyed.");
+    }
 }

@@ -1,8 +1,9 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkClient : MonoBehaviour
+public class NetworkClient : IDisposable
 {
     private NetworkManager _networkManager;
 
@@ -29,5 +30,15 @@ public class NetworkClient : MonoBehaviour
             _networkManager.Shutdown();
             Debug.Log("Disconnected from server and returned to main menu.");
         }
+    }
+
+    public void Dispose()
+    {
+        if (_networkManager != null)
+        {
+            _networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+        
+        Debug.Log("NetworkClient disposed.");
     }
 }

@@ -58,4 +58,11 @@ public class ClientSingleton : MonoBehaviour
         return await GameManager.InitAsync();
         // After initialization, you can proceed with other client logic, such as connecting to a server or starting the game.
     }
+
+    private void Destroy()
+    {
+        GameManager?.Dispose();
+        _instance = null; // Clear the instance when the singleton is destroyed
+        Debug.Log("ClientSingleton destroyed.");
+    }
 }

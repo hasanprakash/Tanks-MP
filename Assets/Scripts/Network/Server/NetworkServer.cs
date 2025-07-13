@@ -4,7 +4,7 @@ using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 
-public class NetworkServer
+public class NetworkServer: IDisposable
 {
     private NetworkManager _networkManager;
     
@@ -51,5 +51,22 @@ public class NetworkServer
         {
             Debug.LogWarning($"Client disconnected but no auth ID found for client ID: {clientId}");
         }
+    }
+
+    public void Dispose()
+    {
+        if (_networkManager != null)
+        {
+            _networkManager.ConnectionApprovalCallback -= OnConnectionApproval;
+            _networkManager.OnServerStarted -= OnServerStarted;
+            _networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+
+        if(_networkManager.IsListening)
+        {
+            _networkManager.Shutdown();
+        }
+
+        Debug.Log("NetworkServer disposed.");
     }
 }
