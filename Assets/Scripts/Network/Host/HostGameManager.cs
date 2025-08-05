@@ -19,7 +19,7 @@ public class HostGameManager : IDisposable
     private string _joinCode;
     private string _lobbyId;
 
-    private NetworkServer _networkServer;
+    public NetworkServer NetworkServer { get; private set; }
 
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
@@ -101,7 +101,7 @@ public class HostGameManager : IDisposable
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
-        _networkServer = new NetworkServer(NetworkManager.Singleton);
+        NetworkServer = new NetworkServer(NetworkManager.Singleton);
 
         NetworkManager.Singleton.StartHost();
 
@@ -143,13 +143,13 @@ public class HostGameManager : IDisposable
             {
                 Debug.LogError($"Failed to delete lobby: {e.Message}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogError($"An error occurred while deleting the lobby: {e.Message}");
             }
             _lobbyId = string.Empty; // Clear the lobby ID after deletion
         }
 
-        _networkServer?.Dispose();
+        NetworkServer?.Dispose();
     }
 }
