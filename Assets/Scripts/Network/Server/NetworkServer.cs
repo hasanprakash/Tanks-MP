@@ -30,6 +30,8 @@ public class NetworkServer : IDisposable
         _authIdToUserData[userData.userAuthId] = userData;
 
         response.Approved = true; // Approve the connection
+        response.Position = SpawnPoint.GetRandomSpawnPosition();
+        response.Rotation = Quaternion.identity;
         response.CreatePlayerObject = true;
         // player object won't spawn like it does normally, we will have to explicitly mention it when we change the network connection approval logic.
     }
