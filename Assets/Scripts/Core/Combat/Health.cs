@@ -59,6 +59,7 @@ public class Health : NetworkBehaviour
         CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value + amount, 0, MaxHealth);
         if (CurrentHealth.Value <= 0)
         {
+            Debug.Log("Player id died, invoking OnDie");
             isDead = true;
             OnDie?.Invoke(this);
         }

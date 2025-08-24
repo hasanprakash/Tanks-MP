@@ -1,0 +1,13 @@
+{
+    "asset": "887499c1bb19f864da5befe1be3ae16d",
+    "fileName": "0198dc18-078b-7526-af15-a2c625b7c7cd.wav",
+    "prompt": "waters drops",
+    "negativePrompt": "",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "modelName": "Text to Sound",
+    "customSeed": -1,
+    "w3CTraceId": "3c47eea3480565625d0d6c7a4607aad2",
+    "duration": 4.0,
+    "autoTrim": true,
+    "hasReference": false
+}
