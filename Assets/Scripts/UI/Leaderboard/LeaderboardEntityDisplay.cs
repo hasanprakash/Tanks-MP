@@ -1,16 +1,30 @@
+using TMPro;
 using UnityEngine;
 
 public class LeaderboardEntityDisplay : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TMP_Text displayText;
+
+    private string playerName;
+    public ulong ClientId { get; private set; }
+    public int Coins { get; private set; }
+
+    public void Initialize(ulong clientId, string playerName, int coins)
     {
-        
+        ClientId = clientId;
+        this.playerName = playerName;
+
+        UpdateCoins(coins);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateCoins(int newCoins)
     {
-        
+        Coins = newCoins;
+        UpdateText();
+    }
+
+    private void UpdateText()
+    {
+        displayText.text = $"1. {playerName} ({Coins})";
     }
 }

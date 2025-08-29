@@ -4299,8 +4299,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1813921783}
-  - component: {fileID: 1813921782}
   - component: {fileID: 1813921784}
+  - component: {fileID: 1813921782}
   m_Layer: 0
   m_Name: GameHUD
   m_TagString: Untagged
@@ -4321,8 +4321,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Leaderboard
   ShowTopMostFoldoutHeaderGroup: 1
-  leaderboardEntityHolder: {fileID: 0}
-  leaderboardEntityPrefab: {fileID: 0}
+  leaderboardEntityHolder: {fileID: 910547691}
+  leaderboardEntityPrefab: {fileID: 2964705552061089297, guid: 24adb0265586b5942b9417820fad6b6f, type: 3}
 --- !u!4 &1813921783
 Transform:
   m_ObjectHideFlags: 0

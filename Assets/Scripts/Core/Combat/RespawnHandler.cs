@@ -19,7 +19,6 @@ public class RespawnHandler : NetworkBehaviour
 
         TankPlayer.OnPlayerSpawned += HandlePlayerSpawned;
         TankPlayer.OnPlayerDespawned += HandlePlayerDespawned;
-        Debug.Log("Subscribed to handle player spawn");
     }
 
     public override void OnNetworkDespawn()
@@ -28,31 +27,27 @@ public class RespawnHandler : NetworkBehaviour
 
         TankPlayer.OnPlayerSpawned -= HandlePlayerSpawned;
         TankPlayer.OnPlayerDespawned -= HandlePlayerDespawned;
-        Debug.Log("Unsubscribed to handle player despawn");
     }
 
     private void HandlePlayerSpawned(TankPlayer player)
     {
         player.Health.OnDie += (health) => HandlePlayerDied(player);
-        Debug.Log("Subscribed to handle player death for: " + player.PlayerName.Value.ToString());
     }
 
     private void HandlePlayerDespawned(TankPlayer player)
     {
         player.Health.OnDie -= (health) => HandlePlayerDied(player);
-        Debug.Log("Unsubscribed to handle player death for: " + player.PlayerName.Value.ToString());
     }
 
     private void HandlePlayerDied(TankPlayer player)
     {
-        Debug.Log("Handling player death and respawn for: " + player.PlayerName.Value.ToString());
         Destroy(player.gameObject);
 
         // Respawn the player after a frame delay to ensure the player object is fully destroyed
-        StartCoroutine(RespawnPlayer(player.OwnerClientId, 3f));
+        StartCoroutine(RespawnPlayer(player.OwnerClientId));
     }
 
-    private IEnumerator RespawnPlayer(ulong ownerClientId, float v)
+    private IEnumerator RespawnPlayer(ulong ownerClientId)
     {
         // yield return new WaitForEndOfFrame(); // runs at the end of the current frame after rendering is completed
         yield return null; // runs at the beginning of the next frame
