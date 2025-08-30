@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -48,8 +46,8 @@ public class CoinSpawner : NetworkBehaviour
 
     private Vector2 GetSpawnPoint()
     {
-        float x = 0;
-        float y = 0;
+        float x;
+        float y;
         while (true)
         {
             x = Random.Range(xSpawnRange.x, xSpawnRange.y);
