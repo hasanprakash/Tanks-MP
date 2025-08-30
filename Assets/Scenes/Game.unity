@@ -5232,7 +5232,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RespawnHandler
   ShowTopMostFoldoutHeaderGroup: 1
-  playerPrefab: {fileID: 4013183943441646941, guid: de4153d7a13dafb439e50cab7f1247e3, type: 3}
+  playerPrefab: {fileID: 4660093898513218468, guid: de4153d7a13dafb439e50cab7f1247e3, type: 3}
+  keptCoinPercentage: 50
 --- !u!4 &2121574211
 Transform:
   m_ObjectHideFlags: 0

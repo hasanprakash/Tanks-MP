@@ -119,7 +119,7 @@ public class Leaderboard : NetworkBehaviour
         {
             ClientId = player.OwnerClientId,
             PlayerName = player.PlayerName.Value,
-            Coins = 0
+            Coins = player.Wallet.TotalCoins.Value
         });
 
         player.Wallet.TotalCoins.OnValueChanged += (oldCoinValue, newCoinValue) =>

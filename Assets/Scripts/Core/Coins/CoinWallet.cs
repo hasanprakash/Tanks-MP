@@ -15,7 +15,6 @@ public class CoinWallet : NetworkBehaviour
         if (IsServer)
         {
             TotalCoins.Value += coinValue;
-            Debug.Log($"Total Coins: {TotalCoins.Value}");
         }
     }
     public void SpendCoins(int amount) // wiil be called from ServerRpc (as network variable can only be changed on the server)
