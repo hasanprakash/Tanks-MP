@@ -4,10 +4,10 @@ using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 
-public class NetworkServer: IDisposable
+public class NetworkServer : IDisposable
 {
     private NetworkManager _networkManager;
-    
+
     private Dictionary<ulong, string> _clientIdToAuth = new Dictionary<ulong, string>();
     private Dictionary<string, UserData> _authIdToUserData = new Dictionary<string, UserData>();
 
@@ -30,6 +30,8 @@ public class NetworkServer: IDisposable
         _authIdToUserData[userData.userAuthId] = userData;
 
         response.Approved = true; // Approve the connection
+        response.Position = SpawnPoint.GetRandomSpawnPosition();
+        response.Rotation = Quaternion.identity;
         response.CreatePlayerObject = true;
         // player object won't spawn like it does normally, we will have to explicitly mention it when we change the network connection approval logic.
     }
@@ -62,11 +64,20 @@ public class NetworkServer: IDisposable
             _networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
         }
 
-        if(_networkManager.IsListening)
+        if (_networkManager.IsListening)
         {
             _networkManager.Shutdown();
         }
 
         Debug.Log("NetworkServer disposed.");
+    }
+    
+    public UserData GetUserDataByClientId(ulong clientId)
+    {
+        if (_clientIdToAuth.TryGetValue(clientId, out string authId) && _authIdToUserData.TryGetValue(authId, out UserData userData))
+        {
+            return userData;
+        }
+        return null;
     }
 }
