@@ -8,6 +8,7 @@ public class TankPlayer : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private CinemachineVirtualCameraBase _virtualCamera;
+    [SerializeField] private Texture2D crossHair;
     [field: SerializeField] public Health Health { get; private set; }
     [field: SerializeField] public CoinWallet Wallet { get; private set; }
 
@@ -34,6 +35,8 @@ public class TankPlayer : NetworkBehaviour
         if (IsOwner)
         {
             _virtualCamera.Priority = cameraPriority;
+
+            Cursor.SetCursor(crossHair, new Vector2(crossHair.width / 2, crossHair.height / 2), CursorMode.Auto);
 
             // _playerNameText.text = PlayerPrefs.GetString(NameSelector.PlayerName, string.Empty);  // not a great way to get the player name
         }

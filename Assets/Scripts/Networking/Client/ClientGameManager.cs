@@ -10,11 +10,11 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ClientGameManager: IDisposable
+public class ClientGameManager : IDisposable
 {
     private JoinAllocation _allocation;
     private NetworkClient _networkClient;
-    public const string MAIN_MENU_SCENE = "Menu"; 
+    public const string MAIN_MENU_SCENE = "Menu";
 
     // LOGIC TO INTERACT WITH UNITY RELAY
     public async Task<bool> InitAsync()
@@ -84,6 +84,11 @@ public class ClientGameManager: IDisposable
         Debug.Log($"Client started with join code: {joinCode}");
     }
 
+    public void Disconnect()
+    {
+        _networkClient.Disconnect();
+    }
+    
     public void Dispose()
     {
         _networkClient?.Dispose();

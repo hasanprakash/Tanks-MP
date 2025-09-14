@@ -420,6 +420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ApplicationController
   clientPrefab: {fileID: 7657204415265318161, guid: 6482ce65b96ecc14ea54bcdd7397a2d8, type: 3}
   hostPrefab: {fileID: 4377311924894393506, guid: d7006496980e94e45a1d2e4cea04d167, type: 3}
+  serverPrefab: {fileID: 3907935143163460342, guid: 6774a19eccefba949b1b1b3f49b36cda, type: 3}
 --- !u!4 &927050035
 Transform:
   m_ObjectHideFlags: 0

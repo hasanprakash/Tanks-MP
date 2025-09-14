@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 public class NetworkServer : IDisposable
 {
     private NetworkManager _networkManager;
 
+    public Action<string> OnClientLeft;
     private Dictionary<ulong, string> _clientIdToAuth = new Dictionary<ulong, string>();
     private Dictionary<string, UserData> _authIdToUserData = new Dictionary<string, UserData>();
 
@@ -18,6 +20,29 @@ public class NetworkServer : IDisposable
         _networkManager.ConnectionApprovalCallback += OnConnectionApproval;
         _networkManager.OnServerStarted += OnServerStarted;
         // _networkManager.OnClientDisconnectCallback += OnClientDisconnect;
+    }
+
+    public bool OpenConnection(string ip, int port)
+    {
+        try
+        {
+            _networkManager.gameObject.GetComponent<UnityTransport>().SetConnectionData(ip, (ushort)port);
+            if (_networkManager.StartServer())
+            {
+                Debug.Log($"Server started on {ip}:{port}");
+                return true;
+            }
+            else
+            {
+                Debug.LogError("Failed to start server.");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Exception while starting server: {ex.Message}");
+            return false;
+        }
     }
 
     private void OnConnectionApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -48,6 +73,8 @@ public class NetworkServer : IDisposable
             Debug.Log($"Client disconnected: {authId}");
             _clientIdToAuth.Remove(clientId);
             _authIdToUserData.Remove(authId);
+
+            OnClientLeft?.Invoke(authId);
         }
         else
         {

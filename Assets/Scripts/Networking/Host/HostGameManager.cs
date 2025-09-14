@@ -105,10 +105,13 @@ public class HostGameManager : IDisposable
 
         NetworkManager.Singleton.StartHost();
 
+        NetworkServer.OnClientLeft += HandleClientLeft;
+
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
     }
 
-    private IEnumerator HeartBeatLobby(float waitTimeSeconds) {
+    private IEnumerator HeartBeatLobby(float waitTimeSeconds)
+    {
         WaitForSeconds delay = new WaitForSeconds(waitTimeSeconds);
         while (true)
         {
@@ -120,7 +123,7 @@ public class HostGameManager : IDisposable
             {
                 Debug.LogError($"Failed to send lobby heartbeat: {e.Message}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogError($"An error occurred while sending the lobby heartbeat: {e.Message}");
             }
@@ -128,7 +131,7 @@ public class HostGameManager : IDisposable
         }
     }
 
-    public void Dispose()
+    public async void ShutDown()
     {
         HostSingleton.Instance.StopCoroutine(nameof(HeartBeatLobby));
 
@@ -136,7 +139,7 @@ public class HostGameManager : IDisposable
         {
             try
             {
-                LobbyService.Instance.DeleteLobbyAsync(_lobbyId);
+                await LobbyService.Instance.DeleteLobbyAsync(_lobbyId);
                 Debug.Log($"Lobby with ID {_lobbyId} deleted successfully.");
             }
             catch (LobbyServiceException e)
@@ -150,6 +153,29 @@ public class HostGameManager : IDisposable
             _lobbyId = string.Empty; // Clear the lobby ID after deletion
         }
 
+        NetworkServer.OnClientLeft -= HandleClientLeft;
+
         NetworkServer?.Dispose();
+    }
+
+    private async void HandleClientLeft(string authId)
+    {
+        try
+        {
+            await LobbyService.Instance.RemovePlayerAsync(_lobbyId, authId);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError($"Failed to remove player from lobby: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"An error occurred while removing player from lobby: {e.Message}");
+        }
+    }
+    
+    public void Dispose()
+    {
+        ShutDown();
     }
 }

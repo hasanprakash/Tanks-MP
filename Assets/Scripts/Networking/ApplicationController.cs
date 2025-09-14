@@ -5,6 +5,7 @@ public class ApplicationController : MonoBehaviour
 {
     [SerializeField] private ClientSingleton clientPrefab;
     [SerializeField] private HostSingleton hostPrefab;
+    [SerializeField] private ServerSingleton serverPrefab;
     private async void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -20,6 +21,11 @@ public class ApplicationController : MonoBehaviour
         {
             Debug.Log("Launching dedicated server...");
             // Initialize dedicated server logic here
+
+            ServerSingleton serverSingleton = Instantiate(serverPrefab);
+            await serverSingleton.CreateServer();
+
+            await serverSingleton.GameManager.StartGameServerAsync();
         }
         else
         {
@@ -28,7 +34,7 @@ public class ApplicationController : MonoBehaviour
 
             HostSingleton hostSingleton = Instantiate(hostPrefab); // what if we don't initialize?
             hostSingleton.CreateHost();
-            
+
             // ClientSingleton clientSingleton = Instantiate(ClientSingleton.Instance); // can't we create like this? have to check that out later.
             ClientSingleton clientSingleton = Instantiate(clientPrefab); // what if we don't initialize?
             bool authenticated = await clientSingleton.CreateClient();
