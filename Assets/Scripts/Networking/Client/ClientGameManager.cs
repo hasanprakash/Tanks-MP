@@ -14,6 +14,8 @@ public class ClientGameManager : IDisposable
 {
     private JoinAllocation _allocation;
     private NetworkClient _networkClient;
+    private MatchplayMatchmaker _matchmaker;
+    private UserData userData;
     public const string MAIN_MENU_SCENE = "Menu";
 
     // LOGIC TO INTERACT WITH UNITY RELAY
@@ -22,12 +24,20 @@ public class ClientGameManager : IDisposable
         await UnityServices.InitializeAsync();
 
         _networkClient = new NetworkClient(NetworkManager.Singleton);
+        _matchmaker = new MatchplayMatchmaker();
 
         AuthState isAuthenticated = await AuthenticationWrapper.DoAuth(5); // 5 is the number of tries to authenticate the player.
         if (isAuthenticated == AuthState.Authenticated)
         {
             Debug.Log("Player authenticated successfully.");
             // Proceed with the game logic, such as connecting to a server or starting the game.
+
+            userData = new UserData
+            {
+                userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer"),
+                userAuthId = AuthenticationService.Instance.PlayerId
+            };
+
             return true;
         }
         else
@@ -71,11 +81,6 @@ public class ClientGameManager : IDisposable
         RelayServerData relayServerData = AllocationUtils.ToRelayServerData(_allocation, "dtls");
         transport.SetRelayServerData(relayServerData); // setting this, so that network manager uses the relay server ip and port to connect to the server.
 
-        UserData userData = new UserData
-        {
-            userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer"),
-            userAuthId = AuthenticationService.Instance.PlayerId
-        };
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
@@ -84,11 +89,27 @@ public class ClientGameManager : IDisposable
         Debug.Log($"Client started with join code: {joinCode}");
     }
 
+    private async Task<MatchmakerPollingResult> GetMatchAsync()
+    {
+        MatchmakingResult matchmakingResult = await _matchmaker.Matchmake(userData);
+
+        if (matchmakingResult.result == MatchmakerPollingResult.Success)
+        {
+            Debug.Log($"Match found! Joining game at {matchmakingResult.ip}:{matchmakingResult.port}");
+            // connect to the server
+        }
+        else
+        {
+            Debug.LogError($"Matchmaking failed: {matchmakingResult.resultMessage}");
+        }
+        return matchmakingResult.result;
+    }
+
     public void Disconnect()
     {
         _networkClient.Disconnect();
     }
-    
+
     public void Dispose()
     {
         _networkClient?.Dispose();
