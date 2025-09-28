@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class MainMenu : MonoBehaviour
         findMatchButtonText.text = "Find Match";
     }
 
-    private async void FindMatch()
+    public async void FindMatch()
     {
         if (isCancelling) return;
 
@@ -30,7 +31,9 @@ public class MainMenu : MonoBehaviour
         {
             queueStatusText.text = "Cancelling...";
             isCancelling = true;
-            // cancel queue
+        
+            await ClientSingleton.Instance.GameManager.CancelMatchmaking();
+
             isCancelling = false;
             isMatchmaking = false;
             findMatchButtonText.text = "Find Match";
@@ -38,10 +41,35 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        // start queue
+        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade);
         findMatchButtonText.text = "Cancel";
         queueStatusText.text = "Searching...";
         isMatchmaking = true;
+    }
+
+    private void OnMatchMade(MatchmakerPollingResult result)
+    {
+        switch (result)
+        {
+            case MatchmakerPollingResult.Success:
+                queueStatusText.text = "Match found! Joining...";
+                break;
+            case MatchmakerPollingResult.TicketCreationError:
+                queueStatusText.text = "Error creating ticket. Please try again.";
+                break;
+            case MatchmakerPollingResult.TicketCancellationError:
+                queueStatusText.text = "Error cancelling ticket. Please try again.";
+                break;
+            case MatchmakerPollingResult.TicketRetrievalError:
+                queueStatusText.text = "Error retrieving ticket. Please try again.";
+                break;
+            case MatchmakerPollingResult.MatchAssignmentError:
+                queueStatusText.text = "Error assigning match. Please try again.";
+                break;
+            default:
+                queueStatusText.text = "An unknown error occurred. Please try again.";
+                break;
+        }
     }
 
     public async void StartHost()

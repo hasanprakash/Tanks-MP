@@ -19,7 +19,7 @@ public class UserData
 {
     public string userName;
     public string userAuthId;
-    public GameData userGamePreferences;
+    public GameData userGamePreferences = new GameData();
 }
 
 public class GameData

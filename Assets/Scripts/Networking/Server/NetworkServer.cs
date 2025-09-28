@@ -10,6 +10,8 @@ public class NetworkServer : IDisposable
     private NetworkManager _networkManager;
 
     public Action<string> OnClientLeft;
+    public Action<UserData> OnUserJoined;
+    public Action<UserData> OnUserLeft;
     private Dictionary<ulong, string> _clientIdToAuth = new Dictionary<ulong, string>();
     private Dictionary<string, UserData> _authIdToUserData = new Dictionary<string, UserData>();
 
@@ -54,6 +56,8 @@ public class NetworkServer : IDisposable
         _clientIdToAuth[request.ClientNetworkId] = userData.userAuthId;
         _authIdToUserData[userData.userAuthId] = userData;
 
+        OnUserJoined?.Invoke(userData);
+
         response.Approved = true; // Approve the connection
         response.Position = SpawnPoint.GetRandomSpawnPosition();
         response.Rotation = Quaternion.identity;
@@ -72,8 +76,8 @@ public class NetworkServer : IDisposable
         {
             Debug.Log($"Client disconnected: {authId}");
             _clientIdToAuth.Remove(clientId);
+            OnUserLeft?.Invoke(_authIdToUserData[authId]);
             _authIdToUserData.Remove(authId);
-
             OnClientLeft?.Invoke(authId);
         }
         else

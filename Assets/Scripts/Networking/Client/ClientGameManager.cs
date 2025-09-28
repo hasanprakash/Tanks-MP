@@ -59,6 +59,15 @@ public class ClientGameManager : IDisposable
         SceneManager.LoadScene(MAIN_MENU_SCENE);
     }
 
+    private void StartClient(string ip, int port)
+    {
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData(ip, (ushort)port);
+        Debug.Log($"Starting client with IP: {ip}, Port: {port}");
+
+        ConnectClient();
+    }
+
     public async Task StartClientAsync(string joinCode)
     {
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -81,12 +90,30 @@ public class ClientGameManager : IDisposable
         RelayServerData relayServerData = AllocationUtils.ToRelayServerData(_allocation, "dtls");
         transport.SetRelayServerData(relayServerData); // setting this, so that network manager uses the relay server ip and port to connect to the server.
 
+        Debug.Log($"Starting client with join code: {joinCode}");
+
+        ConnectClient();
+    }
+
+    private void ConnectClient()
+    {
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
         NetworkManager.Singleton.StartClient();
-        Debug.Log($"Client started with join code: {joinCode}");
+    }
+
+    public async void MatchmakeAsync(Action<MatchmakerPollingResult> callback)
+    {
+        if (_matchmaker == null)
+        {
+            Debug.LogError("Matchmaker not initialized.");
+            return;
+        }
+
+        MatchmakerPollingResult matchResult = await GetMatchAsync();
+        callback?.Invoke(matchResult);
     }
 
     private async Task<MatchmakerPollingResult> GetMatchAsync()
@@ -96,13 +123,18 @@ public class ClientGameManager : IDisposable
         if (matchmakingResult.result == MatchmakerPollingResult.Success)
         {
             Debug.Log($"Match found! Joining game at {matchmakingResult.ip}:{matchmakingResult.port}");
-            // connect to the server
+            StartClient(matchmakingResult.ip, matchmakingResult.port);
         }
         else
         {
             Debug.LogError($"Matchmaking failed: {matchmakingResult.resultMessage}");
         }
         return matchmakingResult.result;
+    }
+
+    public async Task CancelMatchmaking()
+    {
+        await _matchmaker?.CancelMatchmaking();
     }
 
     public void Disconnect()

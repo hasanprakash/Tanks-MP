@@ -133,26 +133,25 @@ public class HostGameManager : IDisposable
 
     public async void ShutDown()
     {
+
+        if (string.IsNullOrEmpty(_lobbyId)) return;
+        
         HostSingleton.Instance.StopCoroutine(nameof(HeartBeatLobby));
-
-        if (!string.IsNullOrEmpty(_lobbyId))
+        try
         {
-            try
-            {
-                await LobbyService.Instance.DeleteLobbyAsync(_lobbyId);
-                Debug.Log($"Lobby with ID {_lobbyId} deleted successfully.");
-            }
-            catch (LobbyServiceException e)
-            {
-                Debug.LogError($"Failed to delete lobby: {e.Message}");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"An error occurred while deleting the lobby: {e.Message}");
-            }
-            _lobbyId = string.Empty; // Clear the lobby ID after deletion
+            await LobbyService.Instance.DeleteLobbyAsync(_lobbyId);
+            Debug.Log($"Lobby with ID {_lobbyId} deleted successfully.");
         }
-
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError($"Failed to delete lobby: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"An error occurred while deleting the lobby: {e.Message}");
+        }
+        _lobbyId = string.Empty; // Clear the lobby ID after deletion
+        
         NetworkServer.OnClientLeft -= HandleClientLeft;
 
         NetworkServer?.Dispose();
