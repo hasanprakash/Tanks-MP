@@ -6,6 +6,8 @@ public class ApplicationController : MonoBehaviour
     [SerializeField] private ClientSingleton clientPrefab;
     [SerializeField] private HostSingleton hostPrefab;
     [SerializeField] private ServerSingleton serverPrefab;
+
+    private ApplicationData applicationData;
     private async void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -21,6 +23,7 @@ public class ApplicationController : MonoBehaviour
         {
             Debug.Log("Launching dedicated server...");
             // Initialize dedicated server logic here
+            applicationData = new ApplicationData();
 
             ServerSingleton serverSingleton = Instantiate(serverPrefab);
             await serverSingleton.CreateServer();

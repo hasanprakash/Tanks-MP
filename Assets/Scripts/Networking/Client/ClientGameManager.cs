@@ -32,6 +32,8 @@ public class ClientGameManager : IDisposable
             Debug.Log("Player authenticated successfully.");
             // Proceed with the game logic, such as connecting to a server or starting the game.
 
+            Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
+
             userData = new UserData
             {
                 userName = PlayerPrefs.GetString(NameSelector.PlayerName, "UknownPlayer"),
@@ -109,6 +111,11 @@ public class ClientGameManager : IDisposable
         if (_matchmaker == null)
         {
             Debug.LogError("Matchmaker not initialized.");
+            return;
+        }
+
+        if (_matchmaker.IsMatchmaking)
+        {
             return;
         }
 

@@ -48,7 +48,17 @@ public class MatchplayBackfiller : IDisposable
 
         if (string.IsNullOrEmpty(localBackfillTicket.Id))
         {
-            localBackfillTicket.Id = await MatchmakerService.Instance.CreateBackfillTicketAsync(createBackfillOptions);
+            try
+            {
+                localBackfillTicket.Id = await MatchmakerService.Instance.CreateBackfillTicketAsync(createBackfillOptions);
+                Debug.Log($"Backfill ticket created successfully: {localBackfillTicket.Id}");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to create backfill ticket: {ex.Message}");
+                IsBackfilling = false;
+                return;
+            }
         }
 
         IsBackfilling = true;
@@ -124,6 +134,7 @@ public class MatchplayBackfiller : IDisposable
     {
         while (IsBackfilling)
         {
+            Debug.Log("Backfill loop tick. localDataDirty: " + localDataDirty);
             if (localDataDirty)
             {
                 await MatchmakerService.Instance.UpdateBackfillTicketAsync(localBackfillTicket.Id, localBackfillTicket);
@@ -132,6 +143,7 @@ public class MatchplayBackfiller : IDisposable
             else
             {
                 localBackfillTicket = await MatchmakerService.Instance.ApproveBackfillTicketAsync(localBackfillTicket.Id);
+                Debug.Log($"Backfill ticket approved. Current players: {MatchPlayerCount}/{maxPlayers}");
             }
 
             if (!NeedsPlayers())
